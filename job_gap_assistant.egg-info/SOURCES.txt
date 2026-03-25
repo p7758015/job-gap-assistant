@@ -1,0 +1,14 @@
+README.md
+pyproject.toml
+app/__init__.py
+app/main.py
+app/schemas.py
+app/services/__init__.py
+app/services/analyzer.py
+app/services/openai_client.py
+job_gap_assistant.egg-info/PKG-INFO
+job_gap_assistant.egg-info/SOURCES.txt
+job_gap_assistant.egg-info/dependency_links.txt
+job_gap_assistant.egg-info/requires.txt
+job_gap_assistant.egg-info/top_level.txt
+tests/test_analyzer.py

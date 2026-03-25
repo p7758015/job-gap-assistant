@@ -1,0 +1,124 @@
+Metadata-Version: 2.4
+Name: job-gap-assistant
+Version: 0.1.0
+Summary: FastAPI service that analyzes a job description against a user's experience and proposes a short learning plan.
+License: MIT
+Keywords: fastapi,openai,pydantic,portfolio
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1,>=0.110
+Requires-Dist: uvicorn[standard]<1,>=0.27
+Requires-Dist: pydantic<3,>=2.5
+Requires-Dist: openai<2,>=1.0
+Requires-Dist: httpx<1,>=0.27
+Provides-Extra: dev
+Requires-Dist: pytest<9,>=8; extra == "dev"
+Requires-Dist: pytest-asyncio<1,>=0.23; extra == "dev"
+
+# job-gap-assistant
+
+`job-gap-assistant` — небольшой FastAPI-сервис для анализа соответствия между вакансией и вашим текущим опытом.
+
+Он принимает:
+- `job_description` — текст вакансии
+- `user_experience` — описание вашего текущего опыта
+
+И возвращает структурированный ответ:
+- извлеченные ключевые компетенции и технологии
+- оценку `fit` (насколько ваш опыт сейчас подходит под вакансию)
+- список мини-проектов/упражнений, чтобы закрыть пробелы
+- roadmap на 2–4 недели
+
+---
+
+## Быстрый старт
+
+### 1) Python
+
+Рекомендуется Python `3.11`.
+
+### 2) Установка зависимостей
+
+С использованием `uv`:
+
+```bash
+uv pip install -e .
+```
+
+Либо через `pip`:
+
+```bash
+pip install -e .
+```
+
+### 3) Переменные окружения
+
+Перед запуском установите:
+
+`OPENAI_API_KEY` — ваш API ключ.
+
+Опционально:
+- `OPENAI_MODEL` — модель для генерации (если не задано, будет использоваться дефолт).
+
+Пример для PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="your_key_here"
+```
+
+### 4) Запуск
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+Откройте:
+- `GET http://127.0.0.1:8000/health`
+- Swagger UI: `http://127.0.0.1:8000/docs`
+
+---
+
+## API
+
+### `POST /analyze`
+
+Тело запроса:
+
+```json
+{
+  "job_description": "string",
+  "user_experience": "string",
+  "response_language": "ru"
+}
+```
+
+Пример запроса (curl):
+
+```bash
+curl -X POST "http://127.0.0.1:8000/analyze" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"job_description\":\"We need a backend engineer with FastAPI, PostgreSQL, and testing.\",\"user_experience\":\"I built a FastAPI app with PostgreSQL and wrote unit tests.\",\"response_language\":\"ru\"}"
+```
+
+Ответ соответствует Pydantic-схемам `AnalyzeResponse`.
+
+---
+
+## Тесты
+
+Для тестов установите dev-зависимости:
+
+```bash
+uv pip install -e ".[dev]"
+```
+
+```bash
+pytest
+```
+
+---
+
+## Примечание
+
+Сервис ожидает, что OpenAI будет возвращать валидный JSON, который затем строго валидируется Pydantic-схемами.
+
