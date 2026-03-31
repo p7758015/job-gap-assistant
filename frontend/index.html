@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Job Gap Assistant – Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="container">
+          <h1 class="title">Job Gap Assistant</h1>
+          <p class="subtitle">AI‑ассистент для анализа вакансий и твоих навыков.</p>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="container grid">
+          <section class="card card-form">
+          <h2 class="section-title">Ввод данных</h2>
+          <form id="analyze-form" novalidate>
+            <div class="field">
+              <label for="job_description" class="field-label">Текст вакансии *</label>
+              <textarea
+                id="job_description"
+                name="job_description"
+                class="field-input"
+                rows="6"
+                placeholder="Скопируй сюда описание вакансии: технологии, обязанности, требования…"
+                required
+              ></textarea>
+              <p id="job_description_hint" class="field-hint">
+                Обязательное поле. Чем детальнее описание, тем точнее анализ.
+              </p>
+            </div>
+
+            <div class="field">
+              <label for="candidate_profile" class="field-label">Твой профиль (опционально)</label>
+              <textarea
+                id="candidate_profile"
+                name="candidate_profile"
+                class="field-input"
+                rows="4"
+                placeholder="Кратко опиши свой опыт: стек, проекты, годы опыта, сильные/слабые стороны…"
+              ></textarea>
+              <p class="field-hint">
+                Необязательно, но помогает ассистенту точнее оценить совпадение и подобрать roadmap.
+              </p>
+            </div>
+
+            <div id="form-error" class="alert alert-error hidden"></div>
+
+            <div class="actions">
+              <button type="submit" id="analyze-button" class="button-primary">
+                Проанализировать
+              </button>
+              <span id="loading-indicator" class="loading-text hidden">Анализирую…</span>
+            </div>
+          </form>
+        </section>
+
+        <section class="card card-results">
+          <h2 class="section-title">Результаты анализа</h2>
+          <div id="results-empty" class="results-empty">
+            Здесь появится анализ вакансии.
+          </div>
+
+          <div id="results" class="results hidden">
+            <div class="fit-block">
+              <div class="fit-score-label">Уровень совпадения</div>
+              <div id="fit-score-value" class="fit-score-value">0%</div>
+              <div id="fit-score-text" class="fit-score-text"></div>
+            </div>
+
+            <div class="skills-grid">
+              <div class="skills-column">
+                <h3>Must have</h3>
+                <ul id="skills-must" class="pill-list"></ul>
+              </div>
+              <div class="skills-column">
+                <h3>Nice to have</h3>
+                <ul id="skills-nice" class="pill-list"></ul>
+              </div>
+              <div class="skills-column">
+                <h3>Bonus</h3>
+                <ul id="skills-bonus" class="pill-list"></ul>
+              </div>
+            </div>
+
+            <div class="results-section">
+              <h3>Над чем стоит поработать</h3>
+              <ul id="gaps-list" class="bullet-list"></ul>
+            </div>
+
+            <div class="results-section">
+              <h3>Проекты для прокачки</h3>
+              <div id="projects-list" class="cards-list"></div>
+            </div>
+
+            <div class="results-section">
+              <h3>Roadmap по неделям</h3>
+              <div id="roadmap-list" class="cards-list"></div>
+            </div>
+          </div>
+        </section>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="container footer-inner">
+          <span>Backend API: <code>/analyze</code></span>
+        </div>
+      </footer>
+    </div>
+
+    <script src="/static/main.js" defer></script>
+  </body>
+  </html>
+

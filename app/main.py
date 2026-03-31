@@ -14,7 +14,11 @@ And returns structured analysis:
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.schemas import AnalyzeRequest, AnalyzeResponse
 from app.services.analyzer import JobGapAnalyzer
@@ -22,6 +26,17 @@ from app.services.openai_client import OpenAIClient
 from pydantic import ValidationError
 
 app = FastAPI(title="job-gap-assistant", version="0.1.0")
+
+# Resolve frontend directory relative to this file so it works
+# both locally and inside Docker.
+FRONTEND_DIR = (Path(__file__).resolve().parent.parent / "frontend").resolve()
+
+if FRONTEND_DIR.is_dir():
+    app.mount(
+        "/static",
+        StaticFiles(directory=FRONTEND_DIR),
+        name="static",
+    )
 
 
 @app.on_event("startup")
@@ -42,6 +57,21 @@ def _startup() -> None:
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/", include_in_schema=False)
+def index() -> FileResponse:
+    """
+    Serve the frontend SPA index.html.
+
+    When running inside Docker, both API and SPA are available on :8000.
+    """
+
+    index_path = FRONTEND_DIR / "index.html"
+    if not index_path.is_file():
+        # Simple fallback: indicate that the frontend is missing.
+        raise HTTPException(status_code=404, detail="Frontend not found.")
+    return FileResponse(index_path)
 
 
 @app.post("/analyze", response_model=AnalyzeResponse)

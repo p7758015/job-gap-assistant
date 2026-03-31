@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Передайте ключ через .env или задействуйте переменные окружения хоста.
+      # OPENAI_API_KEY должен быть установлен для работы сервиса.
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped
+
