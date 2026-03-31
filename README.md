@@ -54,10 +54,11 @@ AI-сервис анализирует вакансию и профиль кан
 
 ## Architecture
 
+```bash
 Client → FastAPI → LLM (analysis)
 ↓
 Pydantic (validation)
-
+```
 ---
 
 ## Key Features
